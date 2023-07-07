@@ -1,0 +1,30 @@
+FORM carrega_nomes .
+  DATA vl_tname LIKE dd02l-tabname VALUE 'ZTBFI839'.
+  DATA: zx030l LIKE x030l.
+
+  CLEAR tg_fanames[].
+  CALL FUNCTION 'GET_FIELDTAB'
+    EXPORTING
+      langu               = sy-langu
+      only                = space
+      tabname             = vl_tname
+      withtext            = 'X'
+    IMPORTING
+      header              = zx030l
+    TABLES
+      fieldtab            = zdfies
+    EXCEPTIONS
+      internal_error      = 01
+      no_texts_found      = 02
+      table_has_no_fields = 03
+      table_not_activ     = 04.
+
+  CASE sy-subrc.
+    WHEN 0.
+      LOOP AT zdfies.
+        tg_fanames = zdfies-fieldtext.
+        APPEND tg_fanames.
+        CLEAR tg_fanames.
+      ENDLOOP.
+  ENDCASE.
+ENDFORM.                    " CARREGA_NOMES
